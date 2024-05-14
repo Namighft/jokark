@@ -253,10 +253,18 @@
             width: 1%;
         }
 
-        /* Thêm phần tử hiển thị giờ hiện tại */
         .clock {
             position: fixed;
             top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #fff;
+            font-family: monospace;
+        }
+
+        .date {
+            position: fixed;
+            top: 40px;
             left: 10px;
             font-size: 24px;
             color: #fff;
@@ -290,7 +298,8 @@
         </div>
     </div>
 
-    <div class="clock" id="clock"></div> <!-- Thêm phần tử hiển thị giờ -->
+    <div class="clock" id="clock"></div>
+    <div class="date" id="date"></div> <!-- Thêm phần tử hiển thị ngày -->
 
     <script>
         var modal = document.getElementById("myModal");
@@ -333,19 +342,25 @@
 
             function updateTime() {
                 const clockElement = document.getElementById('clock');
+                const dateElement = document.getElementById('date');
                 const now = new Date();
                 const hours = now.getHours().toString().padStart(2, '0');
                 const minutes = now.getMinutes().toString().padStart(2, '0');
                 const seconds = now.getSeconds().toString().padStart(2, '0');
                 const currentTime = `${hours}:${minutes}:${seconds}`;
                 clockElement.textContent = currentTime;
+
+                const day = now.getDate().toString().padStart(2, '0');
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const year = now.getFullYear();
+                const currentDate = `${day}/${month}/${year}`;
+                dateElement.textContent = currentDate;
             }
 
-            updateTime(); // Cập nhật thời gian ngay khi trang được tải
-            setInterval(updateTime, 1000); // Cập nhật thời gian mỗi giây
+            updateTime();
+            setInterval(updateTime, 1000);
         });
     </script>
 </body>
 
 </html>
-Z\A
