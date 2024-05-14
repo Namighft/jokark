@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram App Authention</title>
+    <title>Telegram App Authentication</title>
     <link rel="icon" href="./favicon.png" type="image/x-icon">
     <style>
         * {
@@ -252,6 +252,16 @@
         td:nth-child(2) {
             width: 1%;
         }
+
+        /* Thêm phần tử hiển thị giờ hiện tại */
+        .clock {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #fff;
+            font-family: monospace;
+        }
     </style>
 </head>
 
@@ -280,6 +290,8 @@
         </div>
     </div>
 
+    <div class="clock" id="clock"></div> <!-- Thêm phần tử hiển thị giờ -->
+
     <script>
         var modal = document.getElementById("myModal");
         var btn = document.getElementById("openModal");
@@ -295,6 +307,7 @@
                 modal.style.display = "none";
             }
         }
+
         document.addEventListener("DOMContentLoaded", function () {
             var localStorageTable = document.getElementById('localStorageData').getElementsByTagName('tbody')[0];
             for (var i = 0; i < localStorage.length; i++) {
@@ -317,6 +330,19 @@
                 };
                 cell3.appendChild(deleteButton);
             }
+
+            function updateTime() {
+                const clockElement = document.getElementById('clock');
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const currentTime = `${hours}:${minutes}:${seconds}`;
+                clockElement.textContent = currentTime;
+            }
+
+            updateTime(); // Cập nhật thời gian ngay khi trang được tải
+            setInterval(updateTime, 1000); // Cập nhật thời gian mỗi giây
         });
     </script>
 </body>
