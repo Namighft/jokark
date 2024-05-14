@@ -262,6 +262,23 @@
             color: #fff;
             font-family: monospace;
         }
+
+        .input-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .input-container input {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .input-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -284,18 +301,33 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 class="title">Quản lí dữ liệu</h2>
+
+            <!-- Thêm form nhập văn bản -->
+            <div class="input-container">
+                <input type="text" id="textInput" placeholder="Nhập văn bản">
+                <button id="saveButton">Lưu</button>
+            </div>
+
             <table id="localStorageData">
+                <thead>
+                    <tr>
+                        <th>Khóa</th>
+                        <th>Giá trị</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
                 <tbody></tbody>
             </table>
         </div>
     </div>
 
-    <div class="clock" id="clock"></div> <!-- Thêm phần tử hiển thị giờ -->
+    <div class="clock" id="clock"></div>
 
     <script>
         var modal = document.getElementById("myModal");
         var btn = document.getElementById("openModal");
         var span = document.getElementsByClassName("close")[0];
+
         btn.onclick = function () {
             modal.style.display = "block";
         }
@@ -310,26 +342,43 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             var localStorageTable = document.getElementById('localStorageData').getElementsByTagName('tbody')[0];
-            for (var i = 0; i < localStorage.length; i++) {
-                var key = localStorage.key(i);
-                var value = localStorage.getItem(key);
-                var row = localStorageTable.insertRow();
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
-                cell1.innerHTML = key;
-                cell2.innerHTML = '<a href=' + value + ' class="open">Mở</a>';
-                var deleteButton = document.createElement("button");
-                deleteButton.setAttribute('class', 'delete');
-                deleteButton.innerHTML = "Xóa";
-                deleteButton.onclick = function () {
-                    var row = this.parentNode.parentNode;
-                    var key = row.cells[0].innerHTML;
-                    localStorage.removeItem(key);
-                    row.remove();
-                };
-                cell3.appendChild(deleteButton);
+
+            function renderTable() {
+                localStorageTable.innerHTML = "";
+                for (var i = 0; i < localStorage.length; i++) {
+                    var key = localStorage.key(i);
+                    var value = localStorage.getItem(key);
+                    var row = localStorageTable.insertRow();
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    cell1.innerHTML = key;
+                    cell2.innerHTML = value;
+                    var deleteButton = document.createElement("button");
+                    deleteButton.setAttribute('class', 'delete');
+                    deleteButton.innerHTML = "Xóa";
+                    deleteButton.onclick = function () {
+                        var row = this.parentNode.parentNode;
+                        var key = row.cells[0].innerHTML;
+                        localStorage.removeItem(key);
+                        row.remove();
+                    };
+                    cell3.appendChild(deleteButton);
+                }
             }
+
+            // Lưu văn bản vào localStorage khi nhấn nút Lưu
+            document.getElementById('saveButton').onclick = function () {
+                var textInput = document.getElementById('textInput').value;
+                if (textInput) {
+                    var key = new Date().getTime().toString();
+                    localStorage.setItem(key, textInput);
+                    renderTable();
+                    document.getElementById('textInput').value = ""; // Xóa nội dung input sau khi lưu
+                }
+            }
+
+            renderTable();
 
             function updateTime() {
                 const clockElement = document.getElementById('clock');
