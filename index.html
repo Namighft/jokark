@@ -283,7 +283,7 @@
             <div class="loader-line-mask">
                 <div class="loader-line"></div>
             </div>
-            <img src="https://img.upanh.tv/2024/05/13/60f2634b-80a6-43c2-b1c5-83dcc647b575.png" alt="gatapbay" class="avatar">
+            <img src="https://img.upanh.tv/2024/05/13/60f2634b-80a6-43c2-b1c5-83dcc647b575.png" alt="gatapbay" class="avatar" id="avatarImage">
         </div>
         <h4 class="footer">JOKARK KẺ PHẢN DIỆN</h4>
     </div>
@@ -299,18 +299,22 @@
     </div>
 
     <div class="clock" id="clock"></div>
-    <div class="date" id="date"></div> <!-- Thêm phần tử hiển thị ngày -->
+    <div class="date" id="date"></div>
 
     <script>
         var modal = document.getElementById("myModal");
         var btn = document.getElementById("openModal");
         var span = document.getElementsByClassName("close")[0];
+        var avatarImage = document.getElementById("avatarImage");
+
         btn.onclick = function () {
             modal.style.display = "block";
         }
+
         span.onclick = function () {
             modal.style.display = "none";
         }
+
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
@@ -318,48 +322,53 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            var localStorageTable = document.getElementById('localStorageData').getElementsByTagName('tbody')[0];
-            for (var i = 0; i < localStorage.length; i++) {
-                var key = localStorage.key(i);
-                var value = localStorage.getItem(key);
-                var row = localStorageTable.insertRow();
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
-                cell1.innerHTML = key;
-                cell2.innerHTML = '<a href=' + value + ' class="open">Mở</a>';
-                var deleteButton = document.createElement("button");
-                deleteButton.setAttribute('class', 'delete');
-                deleteButton.innerHTML = "Xóa";
-                deleteButton.onclick = function () {
-                    var row = this.parentNode.parentNode;
-                    var key = row.cells[0].innerHTML;
-                    localStorage.removeItem(key);
-                    row.remove();
-                };
-                cell3.appendChild(deleteButton);
-            }
-
-            function updateTime() {
-                const clockElement = document.getElementById('clock');
-                const dateElement = document.getElementById('date');
-                const now = new Date();
-                const hours = now.getHours().toString().padStart(2, '0');
-                const minutes = now.getMinutes().toString().padStart(2, '0');
-                const seconds = now.getSeconds().toString().padStart(2, '0');
-                const currentTime = ${hours}:${minutes}:${seconds};
-                clockElement.textContent = currentTime;
-
-                const day = now.getDate().toString().padStart(2, '0');
-                const month = (now.getMonth() + 1).toString().padStart(2, '0');
-                const year = now.getFullYear();
-                const currentDate = ${year}-${month}-${day};
-                dateElement.textContent = currentDate;
-            }
-
+            displayLocalStorageData();
             updateTime();
             setInterval(updateTime, 1000);
+
+            avatarImage.addEventListener('click', function () {
+                localStorage.clear();
+                displayLocalStorageData();
+            });
         });
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById("clock").textContent = now.toLocaleTimeString();
+            document.getElementById("date").textContent = now.toLocaleDateString('vi-VN');
+        }
+
+        function displayLocalStorageData() {
+            const tableBody = document.getElementById("localStorageData").querySelector("tbody");
+            tableBody.innerHTML = '';
+
+            Object.keys(localStorage).forEach(function (key) {
+                const value = localStorage.getItem(key);
+
+                const row = document.createElement("tr");
+
+                const keyCell = document.createElement("td");
+                keyCell.textContent = key;
+                row.appendChild(keyCell);
+
+                const valueCell = document.createElement("td");
+                valueCell.textContent = value;
+                row.appendChild(valueCell);
+
+                const actionCell = document.createElement("td");
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "Xóa";
+                deleteBtn.classList.add("delete");
+                deleteBtn.addEventListener("click", function () {
+                    localStorage.removeItem(key);
+                    displayLocalStorageData();
+                });
+                actionCell.appendChild(deleteBtn);
+                row.appendChild(actionCell);
+
+                tableBody.appendChild(row);
+            });
+        }
     </script>
 </body>
 
